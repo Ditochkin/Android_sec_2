@@ -111,6 +111,9 @@ fun ItemDetailsScreen(
                     navigateBack()
                 }
             },
+            onShare = {
+
+            },
             modifier = Modifier
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
@@ -123,6 +126,7 @@ private fun ItemDetailsBody(
     itemDetailsUiState: ItemDetailsUiState,
     onSellItem: () -> Unit,
     onDelete: () -> Unit,
+    onShare: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -147,6 +151,13 @@ private fun ItemDetailsBody(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.delete))
+        }
+        OutlinedButton(
+            onClick = onShare,
+            shape = MaterialTheme.shapes.small,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.share))
         }
         if (deleteConfirmationRequired) {
             DeleteConfirmationDialog(
@@ -270,6 +281,6 @@ fun ItemDetailsScreenPreview() {
     InventoryTheme {
         ItemDetailsBody(ItemDetailsUiState(
             outOfStock = true, itemDetails = ItemDetails(1, "Pen", "$100", "10")
-        ), onSellItem = {}, onDelete = {})
+        ), onSellItem = {}, onDelete = {}, onShare = {})
     }
 }

@@ -70,9 +70,21 @@ class ItemEditViewModel(
             ItemUiState(itemDetails = itemDetails, isEntryValid = validateInput(itemDetails))
     }
 
+    fun checkEmail(email: String): Boolean {
+        val emailRegex = Regex("^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})")
+        return email.matches(emailRegex)
+    }
+
+    fun checkPhoneNumber(phoneNumber: String): Boolean {
+        val phoneRegex = Regex("^\\+?[0-9]+$")
+        return phoneNumber.matches(phoneRegex)
+    }
+
     private fun validateInput(uiState: ItemDetails = itemUiState.itemDetails): Boolean {
         return with(uiState) {
-            name.isNotBlank() && price.isNotBlank() && quantity.isNotBlank()
+            name.isNotBlank() && price.isNotBlank() && quantity.isNotBlank() &&
+            supplier_name.isNotBlank() && supplier_email.isNotBlank() && supplier_phone.isNotBlank() &&
+            checkEmail(supplier_email) && checkPhoneNumber(supplier_phone)
         }
     }
 }
