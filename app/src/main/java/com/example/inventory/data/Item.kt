@@ -16,12 +16,15 @@
 
 package com.example.inventory.data
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 /**
  * Entity data class represents a single row in the database.
  */
+@Parcelize
 @Entity(tableName = "items")
 data class Item(
     @PrimaryKey(autoGenerate = true)
@@ -32,4 +35,10 @@ data class Item(
     val supplier_name: String,
     val supplier_email: String,
     val supplier_phone: String,
-)
+
+    val sourceType: SourceType
+): Parcelable
+
+enum class SourceType {
+    Manual, File
+}

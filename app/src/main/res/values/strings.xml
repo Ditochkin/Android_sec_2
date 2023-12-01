@@ -25,7 +25,15 @@
     <string name="item">Item</string>
     <string name="item_detail_title">Item Details</string>
     <string name="item_entry_title">Add Item</string>
+    <string name="settings_title">Settings</string>
+    <string name="shipper_name_default">Default shipper name</string>
+    <string name="shipper_email_default">Default shipper E-mail</string>
+    <string name="shipper_phone_default">Default shipper phone</string>
+    <string name="hide_sensitive_data">Hide sensitive data</string>
+    <string name="disable_sharing">Disable sharing</string>
+    <string name="save_title">Save</string>
     <string name="item_name_req">Item Name*</string>
+    <string name="enable_default_fields">Enable default fields</string>
     <string name="item_price_req">Item Price*</string>
     <string name="no">No</string>
     <string name="price">Price</string>

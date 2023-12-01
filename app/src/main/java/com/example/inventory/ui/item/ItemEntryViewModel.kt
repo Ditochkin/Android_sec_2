@@ -23,6 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.inventory.data.Item
 import com.example.inventory.data.ItemsRepository
+import com.example.inventory.data.Settings
+import com.example.inventory.data.SourceType
 import java.text.NumberFormat
 
 /**
@@ -77,7 +79,18 @@ class ItemEntryViewModel(private val itemsRepository: ItemsRepository) : ViewMod
  * Represents Ui State for an Item.
  */
 data class ItemUiState(
-    val itemDetails: ItemDetails = ItemDetails(),
+    val itemDetails: ItemDetails = if (!Settings.enableDefaultFields)
+        ItemDetails()
+    else ItemDetails(
+        id = 0,
+        name = "",
+        price = "",
+        quantity = "",
+        supplier_name = Settings.defaultShipperName,
+        supplier_email = Settings.defaultShipperPhone,
+        supplier_phone = Settings.defaultShipperEmail,
+        sourceType = SourceType.Manual,
+    ),
     val isEntryValid: Boolean = false
 )
 
@@ -89,6 +102,7 @@ data class ItemDetails(
     val supplier_name: String = "",
     val supplier_email: String = "",
     val supplier_phone: String = "",
+    val sourceType: SourceType = SourceType.Manual
 )
 
 /**
@@ -103,7 +117,8 @@ fun ItemDetails.toItem(): Item = Item(
     quantity = quantity.toIntOrNull() ?: 0,
     supplier_name = supplier_name,
     supplier_email = supplier_email,
-    supplier_phone = supplier_phone
+    supplier_phone = supplier_phone,
+    sourceType = sourceType
 )
 
 fun Item.formatedPrice(): String {
@@ -129,4 +144,5 @@ fun Item.toItemDetails(): ItemDetails = ItemDetails(
     supplier_name = supplier_name,
     supplier_email = supplier_email,
     supplier_phone = supplier_phone,
+    sourceType = sourceType
 )

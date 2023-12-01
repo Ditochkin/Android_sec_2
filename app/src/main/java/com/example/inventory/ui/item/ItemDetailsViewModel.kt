@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.inventory.data.Item
 import com.example.inventory.data.ItemsRepository
+import com.example.inventory.g_mainActivity
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -77,7 +78,7 @@ class ItemDetailsViewModel(
                 type = "text/plain"
             }
 
-
+            g_mainActivity.startActivity(sendIntent)
         }
     }
 
