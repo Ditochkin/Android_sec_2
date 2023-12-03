@@ -4,67 +4,79 @@ import android.app.Application
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.example.inventory.g_masterKey
 
 object Settings {
-    private lateinit var app: Application
-    private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var masterKey: MasterKey
+    private lateinit var m_sharedPreferences: SharedPreferences
+
+    private const val NAME_KEY = "supplier_name_key"
+    private const val PHONE_KEY = "supplier_phone_key"
+    private const val EMAIL_KEY = "supplier_email_key"
+    private const val DEFAULT_FIELDS_KEY = "default_fields_key"
+    private const val SENSITIVE_DATA_KEY = "sensitive_data_key"
+    private const val SHARE_KEY = "share_key"
 
     fun init(context: Application) {
-        app = context
-        masterKey = MasterKey.Builder(app, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+        val masterKeySettings = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
             .build()
-        sharedPreferences = EncryptedSharedPreferences.create(
+
+        g_masterKey = masterKeySettings
+
+        m_sharedPreferences = EncryptedSharedPreferences.create(
             context,
-            SETTINGS_PREFERENCES_NAME,
-            masterKey,
+            "PreferencesFilename",
+            masterKeySettings,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
     }
 
     var defaultShipperName: String
-        get() = sharedPreferences.getString(DEF_NAME_KEY, "")!!
+        get() = m_sharedPreferences.getString(NAME_KEY, "")!!
         set(value) {
-            sharedPreferences.edit().putString(DEF_NAME_KEY, value).apply()
-        }
-
-    var defaultShipperPhone: String
-        get() = sharedPreferences.getString(DEF_PHONE_KEY, "")!!
-        set(value) {
-            sharedPreferences.edit().putString(DEF_PHONE_KEY, value).apply()
+            m_sharedPreferences.edit()
+                .putString(NAME_KEY, value)
+                .apply()
         }
 
     var defaultShipperEmail: String
-        get() = sharedPreferences.getString(DEF_EMAIL_KEY, "")!!
+        get() = m_sharedPreferences.getString(EMAIL_KEY, "")!!
         set(value) {
-            sharedPreferences.edit().putString(DEF_EMAIL_KEY, value).apply()
+            m_sharedPreferences.edit()
+                .putString(EMAIL_KEY, value)
+                .apply()
+        }
+
+    var defaultShipperPhone: String
+        get() = m_sharedPreferences.getString(PHONE_KEY, "")!!
+        set(value) {
+            m_sharedPreferences.edit()
+                .putString(PHONE_KEY, value)
+                .apply()
         }
 
     var enableDefaultFields: Boolean
-        get() = sharedPreferences.getBoolean(ENABLE_DEF_FIELDS_KEY, false)
+        get() = m_sharedPreferences.getBoolean(DEFAULT_FIELDS_KEY, false)
         set(value) {
-            sharedPreferences.edit().putBoolean(ENABLE_DEF_FIELDS_KEY, value).apply()
+            m_sharedPreferences.edit()
+                .putBoolean(DEFAULT_FIELDS_KEY, value)
+                .apply()
         }
 
     var hideSensitiveData: Boolean
-        get() = sharedPreferences.getBoolean(HIDE_SENSITIVE_DATA_KEY, false)
+        get() = m_sharedPreferences.getBoolean(SENSITIVE_DATA_KEY, false)
         set(value) {
-            sharedPreferences.edit().putBoolean(HIDE_SENSITIVE_DATA_KEY, value).apply()
+            m_sharedPreferences.edit()
+                .putBoolean(SENSITIVE_DATA_KEY, value)
+                .apply()
         }
 
-    var disableSharing: Boolean
-        get() = sharedPreferences.getBoolean(DISABLE_SHARING_KEY, false)
+    var enableSharing: Boolean
+        get() = m_sharedPreferences.getBoolean(SHARE_KEY, false)
         set(value) {
-            sharedPreferences.edit().putBoolean(DISABLE_SHARING_KEY, value).apply()
+            m_sharedPreferences.edit()
+                .putBoolean(SHARE_KEY, value)
+                .apply()
         }
-
-    private const val SETTINGS_PREFERENCES_NAME = "app_settings"
-    private const val DEF_NAME_KEY = "default_shipper_name"
-    private const val DEF_PHONE_KEY = "default_shipper_phone"
-    private const val DEF_EMAIL_KEY = "default_shipper_email"
-    private const val ENABLE_DEF_FIELDS_KEY = "enable_def_fields"
-    private const val HIDE_SENSITIVE_DATA_KEY = "hide_sensitive_data"
-    private const val DISABLE_SHARING_KEY = "disable_sharing"
 }

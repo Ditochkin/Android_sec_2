@@ -22,18 +22,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.security.crypto.MasterKey
 import com.example.inventory.data.Settings
 import com.example.inventory.ui.theme.InventoryTheme
 
-lateinit var g_mainActivity: MainActivity
-
+lateinit var g_mainActivity : MainActivity
+lateinit var g_masterKey: MasterKey
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        g_mainActivity = this
-
-        Settings.init(application)
-
         super.onCreate(savedInstanceState)
+        Settings.init(application)
+        g_mainActivity = this
         setContent {
             InventoryTheme {
                 // A surface container using the 'background' color from the theme

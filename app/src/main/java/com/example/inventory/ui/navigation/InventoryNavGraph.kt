@@ -18,6 +18,7 @@ package com.example.inventory.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -51,10 +52,23 @@ fun InventoryNavHost(
             HomeScreen(
                 navigateToItemEntry = { navController.navigate(ItemEntryDestination.route) },
                 navigateToItemUpdate = {
-                    navController.navigate("${ItemDetailsDestination.route}/${it}") },
-                navigateToSettings = { navController.navigate(SettingsDestination.route) },
+                    navController.navigate("${ItemDetailsDestination.route}/${it}")
+                },
+                navigateToSettings = {
+                    navController.navigate(SettingsDestination.route)
+                }
             )
         }
+
+        composable(
+            route = SettingsDestination.route
+        ) {
+            SettingsScreen(
+                navigateBack = { navController.popBackStack() },
+                onNavigateUp = { navController.navigateUp() }
+            )
+        }
+
         composable(route = ItemEntryDestination.route) {
             ItemEntryScreen(
                 navigateBack = { navController.popBackStack() },
@@ -79,14 +93,6 @@ fun InventoryNavHost(
             })
         ) {
             ItemEditScreen(
-                navigateBack = { navController.popBackStack() },
-                onNavigateUp = { navController.navigateUp() }
-            )
-        }
-        composable(
-            route = SettingsDestination.route
-        ) {
-            SettingsScreen(
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() }
             )

@@ -17,14 +17,23 @@
 package com.example.inventory.ui.item
 
 import android.content.Context
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.security.crypto.EncryptedFile
 import com.example.inventory.data.Item
 import com.example.inventory.data.ItemsRepository
 import com.example.inventory.data.Settings
-import com.example.inventory.data.SourceType
+import com.example.inventory.g_mainActivity
+import com.example.inventory.g_masterKey
+import com.google.gson.Gson
+import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileInputStream
 import java.text.NumberFormat
 
 /**
@@ -56,6 +65,12 @@ class ItemEntryViewModel(private val itemsRepository: ItemsRepository) : ViewMod
         }
     }
 
+    suspend fun loadItem(){
+
+    }
+
+
+
     fun checkEmail(email: String): Boolean {
         val emailRegex = Regex("^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})")
         return email.matches(emailRegex)
@@ -73,23 +88,53 @@ class ItemEntryViewModel(private val itemsRepository: ItemsRepository) : ViewMod
             checkEmail(supplier_email) && checkPhoneNumber(supplier_phone)
         }
     }
+    suspend fun loadFromFile(uri: Uri) {
+        val contentResolver = g_mainActivity.applicationContext.contentResolver
+
+        val file = File(g_mainActivity.applicationContext.cacheDir, "temp.json")
+        if (file.exists())
+            file.delete()
+
+        val encryptedFile = EncryptedFile.Builder(
+            g_mainActivity.applicationContext,
+            file,
+            g_masterKey,
+            EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
+        ).build()
+
+        file.outputStream().use { outputStream ->
+            contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
+                FileInputStream(descriptor.fileDescriptor).use { inputStream ->
+                    inputStream.copyTo(outputStream)
+                    inputStream.close()
+                }
+                outputStream.close()
+            }
+        }
+
+        encryptedFile.openFileInput().use { inputStream ->
+            val jsonItem = String(inputStream.readBytes())
+            val gson = Gson()
+            val item = gson.fromJson(jsonItem, Item::class.java)
+            item.is_manual = false
+
+            itemsRepository.insertItem(item)
+
+            file.delete()
+        }
+    }
 }
 
 /**
  * Represents Ui State for an Item.
  */
 data class ItemUiState(
-    val itemDetails: ItemDetails = if (!Settings.enableDefaultFields)
+    val itemDetails: ItemDetails  = if (!Settings.enableDefaultFields)
         ItemDetails()
     else ItemDetails(
-        id = 0,
-        name = "",
-        price = "",
-        quantity = "",
         supplier_name = Settings.defaultShipperName,
-        supplier_email = Settings.defaultShipperPhone,
-        supplier_phone = Settings.defaultShipperEmail,
-        sourceType = SourceType.Manual,
+        supplier_email = Settings.defaultShipperEmail,
+        supplier_phone = Settings.defaultShipperPhone
     ),
     val isEntryValid: Boolean = false
 )
@@ -99,10 +144,10 @@ data class ItemDetails(
     val name: String = "",
     val price: String = "",
     val quantity: String = "",
+    val is_manual: Boolean = true,
     val supplier_name: String = "",
     val supplier_email: String = "",
     val supplier_phone: String = "",
-    val sourceType: SourceType = SourceType.Manual
 )
 
 /**
@@ -118,7 +163,7 @@ fun ItemDetails.toItem(): Item = Item(
     supplier_name = supplier_name,
     supplier_email = supplier_email,
     supplier_phone = supplier_phone,
-    sourceType = sourceType
+    is_manual = is_manual
 )
 
 fun Item.formatedPrice(): String {
@@ -144,5 +189,4 @@ fun Item.toItemDetails(): ItemDetails = ItemDetails(
     supplier_name = supplier_name,
     supplier_email = supplier_email,
     supplier_phone = supplier_phone,
-    sourceType = sourceType
 )

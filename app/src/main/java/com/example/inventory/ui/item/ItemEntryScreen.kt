@@ -16,6 +16,8 @@
 
 package com.example.inventory.ui.item
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -61,6 +63,17 @@ fun ItemEntryScreen(
     viewModel: ItemEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val loadFileLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.OpenDocument()
+        ) { uri ->
+            if (uri == null)
+                return@rememberLauncherForActivityResult
+            coroutineScope.launch {
+                viewModel.loadFromFile(uri)
+                navigateBack()
+            }
+        }
     Scaffold(
         topBar = {
             InventoryTopAppBar(
@@ -83,6 +96,9 @@ fun ItemEntryScreen(
                     navigateBack()
                 }
             },
+            onLoadClick = {
+                loadFileLauncher.launch(arrayOf("application/json"))
+            },
             modifier = Modifier
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
@@ -96,6 +112,7 @@ fun ItemEntryBody(
     itemUiState: ItemUiState,
     onItemValueChange: (ItemDetails) -> Unit,
     onSaveClick: () -> Unit,
+    onLoadClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -114,6 +131,13 @@ fun ItemEntryBody(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = stringResource(R.string.save_action))
+        }
+        Button(
+            onClick = onLoadClick,
+            shape = MaterialTheme.shapes.small,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = stringResource(R.string.load_action))
         }
     }
 }
@@ -231,6 +255,6 @@ private fun ItemEntryScreenPreview() {
             ItemDetails(
                 name = "Item name", price = "10.00", quantity = "5"
             )
-        ), onItemValueChange = {}, onSaveClick = {})
+        ), onItemValueChange = {}, onSaveClick = {}, onLoadClick = {})
     }
 }

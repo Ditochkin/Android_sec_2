@@ -16,20 +16,27 @@
 
 package com.example.inventory.ui.item
 
+
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.security.crypto.EncryptedFile
 import com.example.inventory.data.Item
 import com.example.inventory.data.ItemsRepository
 import com.example.inventory.g_mainActivity
+import com.example.inventory.g_masterKey
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 
 /**
  * ViewModel to retrieve, update and delete an item from the [ItemsRepository]'s data source.
@@ -38,6 +45,7 @@ class ItemDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     private val itemsRepository: ItemsRepository,
 ) : ViewModel() {
+
 
     private val itemId: Int = checkNotNull(savedStateHandle[ItemDetailsDestination.itemIdArg])
 
@@ -103,6 +111,38 @@ class ItemDetailsViewModel(
 
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
+    }
+
+    fun saveToFile(uri: Uri) {
+        val contentResolver = g_mainActivity.applicationContext.contentResolver
+
+        val file = File(g_mainActivity.applicationContext.cacheDir, "file.json")
+        if (file.exists())
+            file.delete()
+
+        val encryptedFile = EncryptedFile.Builder(
+            g_mainActivity.applicationContext,
+            file,
+            g_masterKey,
+            EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
+        ).build()
+
+        encryptedFile.openFileOutput().apply {
+            val jsonItem = Gson().toJson(uiState.value.itemDetails.toItem())
+            write(jsonItem.toByteArray())
+            close()
+        }
+
+        contentResolver.openFileDescriptor(uri, "w")?.use { descriptor ->
+            FileOutputStream(descriptor.fileDescriptor).use { outputStream ->
+                file.inputStream().use { inputStream ->
+                    inputStream.copyTo(outputStream)
+                    inputStream.close()
+                }
+                outputStream.close()
+            }
+        }
+        file.delete()
     }
 }
 

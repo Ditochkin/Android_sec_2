@@ -72,6 +72,7 @@ fun ItemEditScreen(
                     navigateBack()
                 }
             },
+            onLoadClick = {},
             modifier = Modifier.padding(innerPadding)
         )
     }
