@@ -15,6 +15,7 @@ object Settings {
     private const val DEFAULT_FIELDS_KEY = "default_fields_key"
     private const val SENSITIVE_DATA_KEY = "sensitive_data_key"
     private const val SHARE_KEY = "share_key"
+    private const val PREFS_KEY_PASSPHRASE = "PREFS_KEY_PASSPHRASE"
 
     fun init(context: Application) {
         val masterKeySettings = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
@@ -78,5 +79,11 @@ object Settings {
             m_sharedPreferences.edit()
                 .putBoolean(SHARE_KEY, value)
                 .apply()
+        }
+
+    var passphraseString: String?
+        get() = m_sharedPreferences.getString(PREFS_KEY_PASSPHRASE, null)
+        set(passphrase) {
+            m_sharedPreferences.edit().putString(PREFS_KEY_PASSPHRASE, passphrase).apply()
         }
 }
