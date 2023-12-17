@@ -16,10 +16,7 @@
 
 package com.example.inventory.ui.item
 
-import android.content.Context
 import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -27,11 +24,10 @@ import androidx.lifecycle.ViewModel
 import androidx.security.crypto.EncryptedFile
 import com.example.inventory.data.Item
 import com.example.inventory.data.ItemsRepository
-import com.example.inventory.data.Settings
+import com.example.inventory.ui.settings.Settings
 import com.example.inventory.g_mainActivity
 import com.example.inventory.g_masterKey
 import com.google.gson.Gson
-import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileInputStream
 import java.text.NumberFormat

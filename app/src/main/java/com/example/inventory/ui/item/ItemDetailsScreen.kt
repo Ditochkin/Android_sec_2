@@ -52,15 +52,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
 import com.example.inventory.data.Item
-import com.example.inventory.data.Settings
+import com.example.inventory.ui.settings.Settings
 import com.example.inventory.ui.AppViewModelProvider
 import com.example.inventory.ui.navigation.NavigationDestination
-import com.example.inventory.ui.theme.InventoryTheme
 import kotlinx.coroutines.launch
 
 object ItemDetailsDestination : NavigationDestination {
@@ -170,19 +168,20 @@ private fun ItemDetailsBody(
         ) {
             Text(stringResource(R.string.delete))
         }
-        OutlinedButton(
-            onClick = onShare,
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth(),
-            enabled = Settings.enableSharing
-        ) {
-            Text(stringResource(R.string.share))
+        if (Settings.enableSharing)
+        {
+            OutlinedButton(
+                onClick = onShare,
+                shape = MaterialTheme.shapes.small,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(stringResource(R.string.share))
+            }
         }
         OutlinedButton(
             onClick = onSave ,
             shape = MaterialTheme.shapes.small,
             modifier = Modifier.fillMaxWidth(),
-            enabled = Settings.enableSharing
         ) {
             Text(stringResource(R.string.save))
         }

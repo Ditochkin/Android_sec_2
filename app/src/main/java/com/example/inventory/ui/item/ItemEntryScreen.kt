@@ -113,7 +113,8 @@ fun ItemEntryBody(
     onItemValueChange: (ItemDetails) -> Unit,
     onSaveClick: () -> Unit,
     onLoadClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isEditSetting: Boolean = false
 ) {
     Column(
         modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
@@ -132,12 +133,15 @@ fun ItemEntryBody(
         ) {
             Text(text = stringResource(R.string.save_action))
         }
-        Button(
-            onClick = onLoadClick,
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = stringResource(R.string.load_action))
+        if (!isEditSetting)
+        {
+            Button(
+                onClick = onLoadClick,
+                shape = MaterialTheme.shapes.small,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = stringResource(R.string.load_action))
+            }
         }
     }
 }

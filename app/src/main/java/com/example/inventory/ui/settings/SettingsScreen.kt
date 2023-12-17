@@ -79,7 +79,6 @@ fun SettingsScreen(
                     .padding(8.dp),
                 fontSize = 22.sp
             )
-
             DefaultSettings(
                 uiState = uiState,
                 modifier = Modifier
@@ -107,7 +106,8 @@ fun SettingsScreen(
                 shape = MaterialTheme.shapes.small,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 20.dp)
+                    .padding(vertical = 20.dp),
+                enabled = viewModel.isValidSettings()
             ) {
                 Text(text = stringResource(id = R.string.save_title))
             }

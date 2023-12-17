@@ -1,10 +1,6 @@
 package com.example.inventory.ui.settings
 
-import android.app.Application
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.inventory.data.Settings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -55,6 +51,22 @@ class SettingsViewModel: ViewModel() {
 
     fun onDisableSharingChange(value: Boolean) {
         m_uiState.value = m_uiState.value.copy(enableDataSharing = value)
+    }
+
+    fun checkEmail(email: String): Boolean {
+        val emailRegex = Regex("^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})")
+        return email.matches(emailRegex)
+    }
+
+    fun checkPhoneNumber(phoneNumber: String): Boolean {
+        val phoneRegex = Regex("^\\+?[0-9]+$")
+        return phoneNumber.matches(phoneRegex)
+    }
+
+    fun isValidSettings() : Boolean{
+        println(m_uiState.value.supplierPhone)
+        println(m_uiState.value.supplierPhone)
+        return checkPhoneNumber(m_uiState.value.supplierPhone) && checkEmail(m_uiState.value.supplierEmail)
     }
 
     fun save() {

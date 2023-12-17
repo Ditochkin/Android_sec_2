@@ -23,7 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.security.crypto.MasterKey
-import com.example.inventory.data.Settings
+import com.example.inventory.ui.settings.Settings
 import com.example.inventory.ui.theme.InventoryTheme
 
 lateinit var g_mainActivity : MainActivity

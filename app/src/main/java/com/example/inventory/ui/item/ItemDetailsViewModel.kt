@@ -28,6 +28,7 @@ import com.example.inventory.data.Item
 import com.example.inventory.data.ItemsRepository
 import com.example.inventory.g_mainActivity
 import com.example.inventory.g_masterKey
+import com.example.inventory.ui.settings.Settings
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -97,8 +98,8 @@ class ItemDetailsViewModel(
         Price: ${item.price}
         Quantity: ${item.quantity}
         Supplier Name: ${item.supplier_name}
-        Supplier Email: ${item.supplier_email}
-        Supplier Phone: ${item.supplier_phone}
+        Supplier Email: ${if (Settings.hideSensitiveData) " -" else item.supplier_email}
+        Supplier Phone: ${if (Settings.hideSensitiveData) " -" else item.supplier_phone}
     """.trimIndent()
     }
 
@@ -116,7 +117,7 @@ class ItemDetailsViewModel(
     fun saveToFile(uri: Uri) {
         val contentResolver = g_mainActivity.applicationContext.contentResolver
 
-        val file = File(g_mainActivity.applicationContext.cacheDir, "file.json")
+        val file = File(g_mainActivity.applicationContext.cacheDir, "temp.json")
         if (file.exists())
             file.delete()
 

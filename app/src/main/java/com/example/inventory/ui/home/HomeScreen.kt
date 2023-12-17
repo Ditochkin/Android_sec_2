@@ -54,6 +54,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
 import com.example.inventory.data.Item
+import com.example.inventory.ui.settings.Settings
 import com.example.inventory.ui.AppViewModelProvider
 import com.example.inventory.ui.item.formatedPrice
 import com.example.inventory.ui.navigation.NavigationDestination
@@ -196,16 +197,19 @@ private fun InventoryItem(
                 text = "• " + item.supplier_name,
                 style = MaterialTheme.typography.titleSmall,
             )
+            if (!Settings.hideSensitiveData)
+            {
+                Text(
+                    text = "• " + item.supplier_email,
+                    style = MaterialTheme.typography.titleSmall,
+                )
+                Text(
+                    text = "• " + item.supplier_phone,
+                    style = MaterialTheme.typography.titleSmall,
+                )
+            }
             Text(
-                text = "• " + item.supplier_email,
-                style = MaterialTheme.typography.titleSmall,
-            )
-            Text(
-                text = "• " + item.supplier_phone,
-                style = MaterialTheme.typography.titleSmall,
-            )
-            Text(
-                text = if (item.is_manual) "*This post was created manually" else "This post was loaded from file",
+                text = if (item.is_manual) "*This post was created manually" else "*This post was loaded from file",
                 style = MaterialTheme.typography.titleSmall,
             )
         }
